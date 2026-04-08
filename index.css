@@ -1,0 +1,179 @@
+:root {
+    --traxion-yellow: #D0DF00;
+    --traxion-bg-gray: #F4F4F4;
+    --traxion-text: #333333;
+    --sidebar-width: 310px;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    color: var(--traxion-text);
+}
+
+/* SIDEBAR STYLES */
+#sidebar-container {
+    min-height: 100vh;
+    width: var(--sidebar-width);
+    transition: all 0.3s;
+    box-shadow: 10px 0 15px -5px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.bg-primary-traxion {
+    background-color: var(--traxion-yellow) !important;
+}
+
+.logo-container {
+    padding: 30px 20px;
+}
+
+.logo-placeholder {
+    max-height: 80px;
+    /* background: #e0e0e0; Mientras pones tu png */
+    padding: 10px;
+}
+
+.menu-item {
+    padding: 18px 25px;
+    text-decoration: none;
+    color: var(--traxion-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    display: block;
+}
+
+.menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding-left: 35px;
+}
+
+.menu-item.active {
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: inset 5px 0 0px 0px var(--traxion-text);
+}
+
+.navbar p{
+    /* margin-top: 0px; */
+    padding: 0px 20px;
+    margin-bottom: auto;
+    margin-right: 10px;
+}
+
+/* MAIN CONTENT */
+#page-content-wrapper {
+    width: 100%;
+}
+
+/* HERO BANNER */
+.hero-banner {
+    height: 300px;
+    position: relative;
+    background-image: url('img/banner.jpg'); /* Imagen de camiones.jpg */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Máscara de baja opacidad */
+}
+
+.hero-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* CARD CONTENEDOR REDONDEADO */
+.content-card {
+    background-color: var(--traxion-bg-gray);
+    border-radius: 40px;
+    border: 2px solid #E0E0E0;
+    padding: 50px;
+    min-height: 60vh;
+    margin-top: -10px;
+    position: relative;
+    z-index: 10;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.parrafo-mantenimiento {
+    width: 90%;
+}
+
+/* IMAGEN REPRESENTATIVA BOX */
+.img-representativa {
+    width: 180px;
+    height: 100px;
+    background-color: #D9D9D9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 30px;
+    transition: transform 0.3s;
+}
+
+.img-representativa:hover {
+    transform: scale(1.05);
+}
+
+.title-imgs {
+    font-size: x-large;
+    padding: 30px;
+    font-weight: bold;
+}
+
+.frase-title {
+    text-align: center;
+    font-size: x-large;
+    margin-top: 30px;
+    width: 80%;
+}
+
+.frase-side {
+    text-align: center;
+    padding: 0px 20px;
+    margin-top: 20px;
+    width: 85%;
+
+}
+
+/* TABLAS */
+.table {
+    background-color: transparent;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* DROPDOWN CUSTOM */
+.dropdown-item:active {
+    background-color: var(--traxion-yellow);
+    color: #000;
+}
