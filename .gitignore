@@ -1,0 +1,19 @@
+# Dependencias de Node
+node_modules/
+package-lock.json
+
+# Nuestra carpeta de "Base de Datos" y el Excel
+# No queremos subir datos reales ni contraseñas a GitHub
+users/
+base_datos.xlsx
+
+# Archivos de entorno (por si en el futuro ocultas contraseñas o puertos aquí)
+.env
+
+# Archivos de depuración y logs de npm
+npm-debug.log
+npm-debug.log.*
+
+# Archivos ocultos generados por el sistema operativo (Mac/Windows)
+.DS_Store
+Thumbs.db

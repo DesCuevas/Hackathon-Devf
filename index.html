@@ -33,7 +33,7 @@
         </nav>
 
         <div id="page-content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-light bg-primary-traxion py-2 px-4 shadow-sm">
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-primary-traxion py-2 px-4 shadow-sm">
                 <div class="ms-auto d-flex align-items-center">
                     <p class="rol-header">Administrador</p>
                     <div class="dropdown">
@@ -44,6 +44,12 @@
                             <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
                         </ul>
                     </div>
+                </div>
+            </nav> -->
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-primary-traxion py-2 px-4 shadow-sm">
+                <div class="ms-auto d-flex align-items-center" id="menu-usuario-container">
+                    
                 </div>
             </nav>
 
@@ -93,7 +99,14 @@
                 </section>
 
                 <section id="sec-admin" class="content-card shadow-lg d-none">
-                    <h3 class="fw-bold mb-4">Estatus de Unidades</h3>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Estatus de Unidades</h3>
+                        
+                        <a href="registro.html" class="btn btn-dark fw-bold shadow-sm px-4">
+                            <i class="bi bi-person-plus-fill me-2"></i>Registrar Transportista
+                        </a>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
@@ -105,22 +118,22 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>404</td>
+                                    <td class="fw-bold">404</td>
                                     <td><span class="status-indicator bg-danger"></span> URGENTE</td>
                                     <td class="text-center"><button class="btn btn-sm btn-outline-dark">Ver historial</button></td>
                                 </tr>
                                 <tr>
-                                    <td>156</td>
+                                    <td class="fw-bold">156</td>
                                     <td><span class="status-indicator bg-danger"></span> URGENTE</td>
                                     <td class="text-center"><button class="btn btn-sm btn-outline-dark">Ver historial</button></td>
                                 </tr>
                                 <tr>
-                                    <td>121</td>
+                                    <td class="fw-bold">121</td>
                                     <td><span class="status-indicator bg-warning"></span> REGULAR</td>
                                     <td class="text-center"><button class="btn btn-sm btn-outline-dark">Ver historial</button></td>
                                 </tr>
                                 <tr>
-                                    <td>168</td>
+                                    <td class="fw-bold">168</td>
                                     <td><span class="status-indicator bg-success"></span> ESTABLE</td>
                                     <td class="text-center"><button class="btn btn-sm btn-outline-dark">Ver historial</button></td>
                                 </tr>
@@ -172,6 +185,46 @@
                 document.getElementById('btn-chat-trans').classList.add('active');
             }
         }
+
+document.addEventListener("DOMContentLoaded", () => {
+        // Mostrar la primera sección por defecto
+        showSection('cuidado'); 
+
+        const usuarioLogueado = sessionStorage.getItem("usuarioLogueado");
+        const contenedorMenu = document.getElementById("menu-usuario-container");
+        
+        if (usuarioLogueado) {
+            // SI ESTÁ LOGUEADO: Mostramos su nombre y el dropdown completo
+            contenedorMenu.innerHTML = `
+                <p class="rol-header mb-0 me-3">En línea</p>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" role="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        ¡Hola, ${usuarioLogueado}!
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="registro.html"><i class="bi bi-person-plus me-2"></i>Registrar usuario</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger fw-bold" href="#" id="btnCerrarSesion"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            `;
+
+            // Le damos función al botón de cerrar sesión
+            document.getElementById("btnCerrarSesion").addEventListener("click", (e) => {
+                e.preventDefault(); // Evita que la página salte
+                sessionStorage.removeItem("usuarioLogueado"); // Borramos la memoria
+                window.location.reload(); // Recargamos para que aparezca "Iniciar sesión"
+            });
+
+        } else {
+            // SI NO ESTÁ LOGUEADO: Mostramos un botón llamativo para iniciar sesión
+            contenedorMenu.innerHTML = `
+                <a href="login.html" class="btn btn-dark fw-bold px-4 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+                </a>
+            `;
+        }
+    });
     </script>
     <script src="roles.js"></script>
 </body>
