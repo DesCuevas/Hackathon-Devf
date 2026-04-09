@@ -1,0 +1,64 @@
+/* Contenedor del formulario */
+.form-stepper-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Animación de entrada para las preguntas */
+.question-step {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Estilo de los inputs tipo barra */
+.input-barra-traxion {
+    border: none;
+    border-bottom: 3px solid #ccc;
+    background: transparent;
+    border-radius: 0;
+    padding: 15px 5px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    transition: border-color 0.3s;
+}
+
+.input-barra-traxion:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: var(--traxion-yellow); /* Usa tu variable hex #D0DF00 */
+}
+
+/* Botones de opción (Recepción/Entrega) */
+.btn-toggle-traxion {
+    flex: 1;
+    padding: 20px;
+    border: 2px solid #ddd;
+    background: white;
+    font-weight: bold;
+    transition: all 0.3s;
+    border-radius: 15px;
+}
+
+.btn-toggle-traxion.active {
+    background-color: var(--traxion-yellow);
+    border-color: var(--traxion-yellow);
+    box-shadow: 0 4px 15px rgba(208, 223, 0, 0.3);
+}
+
+/* Cuadro de texto para la última pregunta */
+.textarea-traxion {
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1.1rem;
+    resize: none;
+}
+
+.textarea-traxion:focus {
+    border-color: var(--traxion-yellow);
+    box-shadow: none;
+}
