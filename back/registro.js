@@ -34,10 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // 3. Manejar la respuesta del servidor
             if (response.ok) {
                 // ¡Todo salió bien!
+                // Redirigimos al login
+                window.location.href = "login.html";
                 alert("✅ " + data.mensaje); 
                 
                 // Limpiamos el formulario para el siguiente registro
                 registroForm.reset(); 
+
+                
                 
             } else {
                 // 🚨 AQUÍ SALE EL MENSAJE SI EL ID YA EXISTE 🚨
