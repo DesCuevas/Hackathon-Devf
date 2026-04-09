@@ -50,7 +50,7 @@ app.post('/api/registro', (req, res) => {
         id_camionero,
         nombre_completo,
         fecha_nacimiento,
-        password // En la vida real esto se encripta, pero para el hackathon está bien
+        password 
     });
 
     // 4. Crear una nueva hoja con los datos actualizados y guardarla

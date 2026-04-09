@@ -72,7 +72,7 @@ body {
 .hero-banner {
     height: 300px;
     position: relative;
-    background-image: url('img/banner.jpg'); /* Imagen de camiones.jpg */
+    background-image: url('../../img/banner.jpg'); /* Imagen de camiones.jpg */
     background-size: cover;
     background-position: center;
     display: flex;
