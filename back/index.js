@@ -24,6 +24,11 @@ async function showSection(sectionId) {
             cargarDatosTablaAdmin();
         }
 
+        if (sectionId === 'formulario_admin') {
+            formulario_admin();
+        }
+        
+
     } catch (error) {
         console.error("Error al cargar la sección:", error);
         contenedor.innerHTML = `<div class="content-card shadow-lg p-5 text-center text-danger"><h3>Error al cargar la vista. Verifica que ${sectionId}.html exista en tu carpeta.</h3></div>`;
