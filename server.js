@@ -104,6 +104,117 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+
+
+
+// --- RUTA PARA ACTUALIZAR MANTENIMIENTOS EN EL EXCEL ---
+app.post('/api/actualizar-mantenimiento', (req, res) => {
+    const { id_camion, mantenimientosActualizados } = req.body;
+    const dbPath = path.join(__dirname, 'db', 'BASE_DE_DATOS_GENERAL.xlsx');
+
+    try {
+        const workbook = xlsx.readFile(dbPath);
+        const worksheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[worksheetName];
+        const datosUnidades = xlsx.utils.sheet_to_json(worksheet);
+
+        // Buscamos la fila del camión que queremos modificar
+        const index = datosUnidades.findIndex(u => String(u.Id_unidad) === String(id_camion));
+
+        if (index !== -1) {
+            // Actualizamos la celda convirtiendo el JSON modificado de vuelta a texto
+            datosUnidades[index].mantenimientos = JSON.stringify(mantenimientosActualizados);
+            
+            // Sobreescribimos la hoja de Excel
+            const nuevaHoja = xlsx.utils.json_to_sheet(datosUnidades);
+            workbook.Sheets[worksheetName] = nuevaHoja;
+            xlsx.writeFile(workbook, dbPath);
+            
+            res.json({ success: true, mensaje: "Excel actualizado correctamente" });
+        } else {
+            res.status(404).json({ error: "Camión no encontrado en la base de datos" });
+        }
+    } catch (error) {
+        console.error("Error al actualizar Excel:", error);
+        res.status(500).json({ error: "Error interno al guardar en Excel" });
+    }
+});
+
+
+
+// --- NUEVA RUTA PARA LEER LA BASE DE DATOS GENERAL ---
+app.get('/api/unidades', (req, res) => {
+    // Apuntamos a la carpeta 'db' y a tu archivo Excel
+    const dbPath = path.join(__dirname, 'db', 'BASE_DE_DATOS_GENERAL.xlsx');
+
+    // Verificamos que el archivo realmente exista
+    if (!fs.existsSync(dbPath)) {
+        return res.status(404).json({ error: "No se encontró el archivo BASE_DE_DATOS_GENERAL.xlsx en la carpeta db" });
+    }
+
+    try {
+        // Leemos el Excel
+        const workbook = xlsx.readFile(dbPath);
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]]; // Tomamos la primera hoja
+        
+        // Convertimos todo a un arreglo de objetos JSON
+        const datosUnidades = xlsx.utils.sheet_to_json(worksheet);
+        
+        // Enviamos los datos al frontend
+        res.json(datosUnidades);
+    } catch (error) {
+        console.error("Error al leer el Excel:", error);
+        res.status(500).json({ error: "Error interno al leer la base de datos" });
+    }
+});
+
+// --- RUTA PARA GUARDAR/ACTUALIZAR REPORTE DEL TRANSPORTISTA ---
+app.post('/api/guardar-reporte', (req, res) => {
+    const respuestasFormulario = req.body;
+    const idCamion = respuestasFormulario.Id_unidad;
+
+    if (!idCamion) {
+        return res.status(400).json({ error: "El ID de la unidad es obligatorio." });
+    }
+
+    const dbPath = path.join(__dirname, 'db', 'BASE_DE_DATOS_GENERAL.xlsx');
+
+    try {
+        const workbook = xlsx.readFile(dbPath);
+        const worksheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[worksheetName];
+        
+        // Convertimos la hoja actual a JSON
+        let datosUnidades = xlsx.utils.sheet_to_json(worksheet);
+
+        // Buscamos si el camión ya existe en el Excel
+        const index = datosUnidades.findIndex(u => String(u.Id_unidad) === String(idCamion));
+
+        if (index !== -1) {
+            // SI EXISTE: Mezclamos los datos viejos con las nuevas respuestas.
+            // Si hay un campo nuevo en 'respuestasFormulario', se agregará automáticamente.
+            datosUnidades[index] = { ...datosUnidades[index], ...respuestasFormulario };
+        } else {
+            // SI NO EXISTE: Lo agregamos como una fila completamente nueva.
+            datosUnidades.push(respuestasFormulario);
+        }
+
+        // Convertimos el JSON de vuelta a Excel. 
+        // ¡La magia de json_to_sheet es que si detecta campos nuevos, crea las columnas solita!
+        const nuevaHoja = xlsx.utils.json_to_sheet(datosUnidades);
+        workbook.Sheets[worksheetName] = nuevaHoja;
+        
+        // Guardamos el archivo
+        xlsx.writeFile(workbook, dbPath);
+        
+        res.json({ success: true, mensaje: "Reporte guardado exitosamente." });
+
+    } catch (error) {
+        console.error("Error al guardar el reporte:", error);
+        res.status(500).json({ error: "Error interno al guardar en Excel." });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

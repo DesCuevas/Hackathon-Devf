@@ -3,9 +3,11 @@
  * Lógica de Formulario Dinámico con Bifurcación (Recepción/Entrega)
  */
 function formulario_transportista() {
+    console.log("CHP1");
+    
     const preguntas = [
         { 
-            id: "id_camion", 
+            id: "Id_unidad", 
             label: "ID de la Unidad (Camión)", 
             type: "text", 
             placeholder: "Ingrese el ID oficial del camión..." 
@@ -149,7 +151,11 @@ function formulario_transportista() {
     /**
      * Renderiza la pregunta actual en el contenedor
      */
+    console.log("CHP2");
+    
     function renderPaso() {
+            console.log("CHP3");
+
         const container = document.getElementById("dynamic-questions-container");
         if (!container) return; // Validación de seguridad
 
@@ -167,6 +173,7 @@ function formulario_transportista() {
         // Barra de progreso
         const porcentaje = (indiceVisual / totalPasosFiltrados) * 100;
         document.getElementById("form-progress-bar").style.width = `${porcentaje}%`;
+    console.log("CHP4");
 
         // Generar HTML
         let inputHTML = '';
@@ -208,7 +215,8 @@ function formulario_transportista() {
         `;
 
         document.getElementById("btn-prev").classList.toggle("d-none", pasoActual === 0);
-        
+            console.log("CHP5");
+
         const esUltimo = (indiceVisual === totalPasosFiltrados);
         document.getElementById("btn-next").classList.toggle("d-none", esUltimo);
         document.getElementById("btn-submit").classList.toggle("d-none", !esUltimo);
@@ -231,6 +239,7 @@ function formulario_transportista() {
         }
         return indice;
     }
+    console.log("CHP6");
 
     function obtenerPasoAnterior(indice) {
         let ant = indice - 1;
@@ -273,18 +282,46 @@ function formulario_transportista() {
         renderPaso();
     });
 
-    newBtnSubmit.addEventListener("click", () => {
+    newBtnSubmit.addEventListener("click", async () => {
+        // 1. Guardar el último input visible
         const currentId = preguntas[pasoActual].id;
         const input = document.getElementById(`val-${currentId}`);
         if (input) respuestas[currentId] = input.value;
 
-        console.log("Enviando reporte final:", respuestas);
-        alert("✅ Formulario enviado correctamente.\nEl reporte ha sido guardado.");
+        // 2. Validación de seguridad mínima
+        if (!respuestas["Id_unidad"]) {
+            alert("⚠️ Error: El ID de la unidad es obligatorio para guardar el reporte.");
+            return;
+        }
 
-        pasoActual = 0;
-        rutaElegida = "";
-        Object.keys(respuestas).forEach(key => delete respuestas[key]);
-        renderPaso();
+        console.log("Enviando reporte final al servidor:", respuestas);
+
+        try {
+            // 3. Enviamos los datos a Node.js
+            const response = await fetch('http://localhost:3000/api/guardar-reporte', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(respuestas)
+            });
+
+            if (!response.ok) {
+                throw new Error("Fallo al comunicarse con el servidor");
+            }
+
+            // 4. Éxito y reseteo
+            alert("✅ Formulario enviado correctamente.\nEl reporte ha sido guardado en la base de datos.");
+
+            pasoActual = 0;
+            rutaElegida = "";
+            Object.keys(respuestas).forEach(key => delete respuestas[key]);
+            renderPaso();
+
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("❌ Hubo un problema al guardar el reporte. Verifica tu conexión.");
+        }
     });
 
     // Solución al Bug de Tiempo: Arrancamos el primer paso directamente en vez de esperar
