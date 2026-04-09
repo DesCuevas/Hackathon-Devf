@@ -3,6 +3,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const xlsx = require('xlsx');
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
@@ -15,6 +16,12 @@ app.use(express.static(__dirname));
 // Ruta donde se guardará la carpeta y el Excel
 const folderPath = path.join(__dirname, 'users');
 const excelFilePath = path.join(folderPath, 'base_datos.xlsx');
+
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Configura tu API Key aquí
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 app.post('/api/registro', (req, res) => {
     const { id_camionero, nombre_completo, fecha_nacimiento, password, rol } = req.body;
@@ -169,51 +176,85 @@ app.get('/api/unidades', (req, res) => {
 });
 
 // --- RUTA PARA GUARDAR/ACTUALIZAR REPORTE DEL TRANSPORTISTA ---
-app.post('/api/guardar-reporte', (req, res) => {
-    const respuestasFormulario = req.body;
+app.post('/api/guardar-reporte', async (req, res) => {
+    let respuestasFormulario = req.body;
     const idCamion = respuestasFormulario.Id_unidad;
 
-    if (!idCamion) {
-        return res.status(400).json({ error: "El ID de la unidad es obligatorio." });
-    }
-
-    const dbPath = path.join(__dirname, 'db', 'BASE_DE_DATOS_GENERAL.xlsx');
-
     try {
+        // 1. Llamamos a Gemini para analizar el reporte
+        const analisisIA = await analizarReporteConIA(respuestasFormulario);
+        
+        // 2. Mezclamos las respuestas originales con el análisis de la IA
+        respuestasFormulario = { ...respuestasFormulario, ...analisisIA };
+
+        // 3. Lógica de guardado en Excel (la que ya teníamos)
+        const dbPath = path.join(__dirname, 'db', 'BASE_DE_DATOS_GENERAL.xlsx');
         const workbook = xlsx.readFile(dbPath);
         const worksheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[worksheetName];
-        
-        // Convertimos la hoja actual a JSON
-        let datosUnidades = xlsx.utils.sheet_to_json(worksheet);
+        let datosUnidades = xlsx.utils.sheet_to_json(workbook.Sheets[worksheetName]);
 
-        // Buscamos si el camión ya existe en el Excel
         const index = datosUnidades.findIndex(u => String(u.Id_unidad) === String(idCamion));
 
         if (index !== -1) {
-            // SI EXISTE: Mezclamos los datos viejos con las nuevas respuestas.
-            // Si hay un campo nuevo en 'respuestasFormulario', se agregará automáticamente.
             datosUnidades[index] = { ...datosUnidades[index], ...respuestasFormulario };
         } else {
-            // SI NO EXISTE: Lo agregamos como una fila completamente nueva.
             datosUnidades.push(respuestasFormulario);
         }
 
-        // Convertimos el JSON de vuelta a Excel. 
-        // ¡La magia de json_to_sheet es que si detecta campos nuevos, crea las columnas solita!
         const nuevaHoja = xlsx.utils.json_to_sheet(datosUnidades);
         workbook.Sheets[worksheetName] = nuevaHoja;
-        
-        // Guardamos el archivo
         xlsx.writeFile(workbook, dbPath);
         
-        res.json({ success: true, mensaje: "Reporte guardado exitosamente." });
+        res.json({ success: true, analisis: analisisIA });
 
     } catch (error) {
-        console.error("Error al guardar el reporte:", error);
-        res.status(500).json({ error: "Error interno al guardar en Excel." });
+        res.status(500).json({ error: "Error procesando reporte con IA" });
     }
 });
+
+
+
+
+
+
+async function analizarReporteConIA(datosReporte) {
+    const prompt = `
+    Eres un experto analista mecánico de Traxion. Analiza el siguiente reporte de unidad y genera un diagnóstico técnico.
+    
+    DATOS DEL REPORTE:
+    - Comentario del chofer: "${datosReporte.comentario_general}"
+    - ¿Hubo pérdida de potencia?: ${datosReporte.perdida_potencia || 'No reportado'}
+    - ¿Ruidos extraños?: ${datosReporte.ruidos_extranos || 'No reportado'}
+    - ¿Sobrecalentamiento?: ${datosReporte.sobrecalentamiento || 'No reportado'}
+    
+    INSTRUCCIONES:
+    Devuelve ÚNICAMENTE un objeto JSON con esta estructura:
+    {
+      "status": "URGENTE" | "PREVENTIVO" | "REVISIÓN SUGERIDA" | "ESTABLE",
+      "ponderacion_status": (Número del 0 al 100),
+      "comentario_ia": (Breve recomendación técnica de máximo 15 palabras)
+    }
+    `;
+
+    try {
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // Limpiamos la respuesta por si Gemini agrega markdown (```json ... ```)
+        const jsonCleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        return JSON.parse(jsonCleaned);
+    } catch (error) {
+        console.error("Error con Gemini:", error);
+        return { status: "REVISIÓN REQUERIDA", ponderacion_status: 50, comentario_ia: "Error al procesar diagnóstico." };
+    }
+}
+
+
+
+
+
+
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);

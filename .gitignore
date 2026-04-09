@@ -17,3 +17,5 @@ npm-debug.log.*
 # Archivos ocultos generados por el sistema operativo (Mac/Windows)
 .DS_Store
 Thumbs.db
+
+.env
