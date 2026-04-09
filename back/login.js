@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 // ¡ÉXITO! Guardamos el nombre en el navegador temporalmente
                 sessionStorage.setItem("usuarioLogueado", data.nombre);
+                sessionStorage.setItem("rolUsuario", data.rol); 
                 
                 // Redirigimos al Dashboard
                 window.location.href = "index.html";

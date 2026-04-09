@@ -10,6 +10,7 @@ const PORT = 3000;
 // Permite recibir datos de tu HTML y entender formato JSON
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname));
 
 // Ruta donde se guardará la carpeta y el Excel
 const folderPath = path.join(__dirname, 'users');
@@ -50,7 +51,8 @@ app.post('/api/registro', (req, res) => {
         id_camionero,
         nombre_completo,
         fecha_nacimiento,
-        password 
+        password,
+        rol
     });
 
     // 4. Crear una nueva hoja con los datos actualizados y guardarla
@@ -98,7 +100,7 @@ app.post('/api/login', (req, res) => {
     res.json({ 
         mensaje: "Login exitoso", 
         nombre: usuarioEncontrado.nombre_completo,
-        rol: "Transportista" // Puedes usar esto después si quieres limitar qué ven
+        rol: usuarioEncontrado.rol // Puedes usar esto después si quieres limitar qué ven
     });
 });
 
