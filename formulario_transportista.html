@@ -1,0 +1,26 @@
+<section id="sec-form-colab" class="content-card shadow-lg active-section">
+    <div class="form-stepper-container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Registro de Operación</h2>
+            <p class="text-muted">Paso <span id="current-step-text">1</span> de <span id="total-steps-text">x</span></p>
+            <div class="progress" style="height: 10px; border-radius: 20px;">
+                <div id="form-progress-bar" class="progress-bar bg-dark" role="progressbar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div id="dynamic-questions-container" class="position-relative">
+            </div>
+
+        <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+            <button type="button" id="btn-prev" class="btn btn-outline-dark px-4 rounded-pill d-none">
+                <i class="bi bi-arrow-left me-2"></i> Anterior
+            </button>
+            <button type="button" id="btn-next" class="btn btn-dark px-4 rounded-pill ms-auto">
+                Siguiente <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+            <button type="button" id="btn-submit" class="btn btn-success px-4 rounded-pill ms-auto d-none">
+                Enviar Reporte <i class="bi bi-check-circle ms-2"></i>
+            </button>
+        </div>
+    </div>
+</section>

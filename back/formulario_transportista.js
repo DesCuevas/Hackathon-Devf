@@ -2,7 +2,7 @@
  * formularios.js
  * Lógica de Formulario Dinámico con Bifurcación (Recepción/Entrega)
  */
-
+function formulario_transportista() {
 const preguntas = [
     { id: "nombre", label: "Nombre del Transportista", type: "text", placeholder: "Escribe tu nombre completo..." },
     { id: "camion", label: "Número de Camión", type: "text", placeholder: "Ej. TRAX-99" },
@@ -158,3 +158,4 @@ document.getElementById("btn-submit").addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
     renderPaso();
 });
+}

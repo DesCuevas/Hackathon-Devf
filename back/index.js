@@ -16,6 +16,10 @@ async function showSection(sectionId) {
         // Convertimos la respuesta en texto HTML y la inyectamos
         const htmlFragment = await response.text();
         contenedor.innerHTML = htmlFragment;
+        // Si la sección que acaba de cargar es 'reportes', ejecutamos su script
+        if (sectionId === 'formulario_transportista') {
+            formulario_transportista();
+        }
 
     } catch (error) {
         console.error("Error al cargar la sección:", error);
