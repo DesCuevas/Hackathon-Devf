@@ -136,7 +136,7 @@ function formulario_transportista() {
         // --- PREGUNTA FINAL PARA AMBOS ---
         { 
             id: "comentario_general", 
-            label: "¿Deseas agregar comentario sobre alguna falla?", 
+            label: "¿Deseas agregar comentario sobre alguna falla para analizarlo con IA?", 
             type: "textarea", 
             placeholder: "Escriba aquí sus comentarios adicionales..." 
         }
