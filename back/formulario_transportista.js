@@ -4,24 +4,142 @@
  */
 function formulario_transportista() {
     const preguntas = [
-        { id: "nombre", label: "Nombre del Transportista", type: "text", placeholder: "Escribe tu nombre completo..." },
-        { id: "camion", label: "Número de Camión", type: "text", placeholder: "Ej. TRAX-99" },
+        { 
+            id: "id_camion", 
+            label: "ID de la Unidad (Camión)", 
+            type: "text", 
+            placeholder: "Ingrese el ID oficial del camión..." 
+        },
         { 
             id: "estado", 
             label: "¿Qué movimiento realizarás?", 
             type: "toggle", 
             options: ["Recepción", "Entrega"] 
         },
+
         // --- RUTA: RECEPCIÓN ---
-        { id: "sello", label: "¿El sello de seguridad está intacto?", type: "text", placeholder: "Ingrese número de sello...", ruta: "Recepción" },
-        { id: "danos", label: "Reporte de daños externos", type: "text", placeholder: "Describa abolladuras o raspones...", ruta: "Recepción" },
-        
+        { 
+            id: "Estado_inicio", 
+            label: "¿En qué estado recibes la unidad?", 
+            type: "select", 
+            options: ["Óptimo", "Regular", "Malo"], 
+            ruta: "Recepción" 
+        },
+        { 
+            id: "Combustible_inicio", 
+            label: "¿Nivel de combustible al inicio?", 
+            type: "range", 
+            min: 0, max: 100, unit: "%", 
+            ruta: "Recepción" 
+        },
+        { 
+            id: "Km_inicio", 
+            label: "¿Kilometraje inicial?", 
+            type: "number", 
+            placeholder: "Ingrese el kilometraje actual (solo números)", 
+            ruta: "Recepción" 
+        },
+        { 
+            id: "Fugas_inicio", 
+            label: "¿Tiene alguna fuga?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Recepción" 
+        },
+        { 
+            id: "Ruido_motor_inicio", 
+            label: "¿El motor presenta ruidos inusuales al encender?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Recepción" 
+        },
+        { 
+            id: "Frenos_correctos_inicio", 
+            label: "¿El sistema de frenos responde correctamente?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Recepción" 
+        },
+
         // --- RUTA: ENTREGA ---
-        { id: "combustible", label: "Nivel de combustible al salir", type: "text", placeholder: "Ej. 3/4, Tanque lleno...", ruta: "Entrega" },
-        { id: "documentos", label: "Folio de salida / Guía", type: "text", placeholder: "Ingrese el número de folio...", ruta: "Entrega" },
-        
-        // --- PREGUNTA FINAL (PARA AMBOS) ---
-        { id: "observaciones", label: "Observaciones Generales", type: "textarea", placeholder: "Escriba aquí sus comentarios finales..." }
+        { 
+            id: "estado_final", 
+            label: "¿Cómo entregas la unidad?", 
+            type: "select", 
+            options: ["Óptimo", "Regular", "Malo"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "combustible_final", 
+            label: "¿Nivel de combustible al final?", 
+            type: "range", 
+            min: 0, max: 100, unit: "%", 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "km_final", 
+            label: "¿Kilometraje final?", 
+            type: "number", 
+            placeholder: "Km al finalizar ruta", 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "rendimiento", 
+            label: "¿El rendimiento fue?", 
+            type: "select", 
+            options: ["Óptimo", "Medio", "Bajo"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "ruido_motor_final", 
+            label: "¿Cuál fue el nivel de ruido del motor?", 
+            type: "select", 
+            options: ["Bajo", "Medio", "Alto"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "vibracion_final", 
+            label: "¿Cuál fue el nivel de vibración?", 
+            type: "select", 
+            options: ["Bajo", "Medio", "Alto"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "menor_desempeno", 
+            label: "¿La unidad tuvo menor desempeño que al inicio?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "perdida_potencia", 
+            label: "¿Hubo pérdida de potencia?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "consumo_normal", 
+            label: "¿El consumo de combustible fue normal?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Entrega" 
+        },
+        { 
+            id: "sobrecalentamiento", 
+            label: "¿El motor presentó sobrecalentamiento?", 
+            type: "toggle_mini", 
+            options: ["Sí", "No"], 
+            ruta: "Entrega" 
+        },
+
+        // --- PREGUNTA FINAL PARA AMBOS ---
+        { 
+            id: "comentario_general", 
+            label: "¿Deseas agregar comentario sobre alguna falla?", 
+            type: "textarea", 
+            placeholder: "Escriba aquí sus comentarios adicionales..." 
+        }
     ];
 
     let pasoActual = 0;
@@ -53,18 +171,33 @@ function formulario_transportista() {
         // Generar HTML
         let inputHTML = '';
         if (preg.type === "text") {
-            inputHTML = `<input type="text" id="val-${preg.id}" class="form-control input-barra-traxion w-100" placeholder="${preg.placeholder}" value="${respuestas[preg.id] || ''}" autocomplete="off">`;
-        } else if (preg.type === "toggle") {
+            inputHTML = `<input type="text" id="val-${preg.id}" class="form-control input-barra-traxion" placeholder="${preg.placeholder}" value="${respuestas[preg.id] || ''}" autocomplete="off">`;
+        } else if (preg.type === "number") {
+            inputHTML = `<input type="number" id="val-${preg.id}" class="form-control input-barra-traxion" placeholder="${preg.placeholder}" value="${respuestas[preg.id] || ''}">`;
+        } else if (preg.type === "range") {
+            const val = respuestas[preg.id] || 50;
+            inputHTML = `
+                <div class="text-center">
+                    <h1 class="display-4 fw-bold text-primary-traxion">${val}${preg.unit}</h1>
+                    <input type="range" id="val-${preg.id}" class="form-range custom-range" min="${preg.min}" max="${preg.max}" value="${val}" oninput="updateRangeVal(this, '${preg.unit}')">
+                </div>`;
+        } else if (preg.type === "select") {
+            inputHTML = `
+                <select id="val-${preg.id}" class="form-select select-traxion p-3">
+                    <option value="" disabled ${!respuestas[preg.id] ? 'selected' : ''}>Seleccione una opción...</option>
+                    ${preg.options.map(opt => `<option value="${opt}" ${respuestas[preg.id] === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>`;
+        } else if (preg.type === "toggle" || preg.type === "toggle_mini") {
             inputHTML = `
                 <div class="d-flex gap-3">
                     ${preg.options.map(opt => `
-                        <button type="button" class="btn btn-toggle-traxion ${rutaElegida === opt ? 'btn-dark' : 'btn-outline-dark'}" onclick="saveToggle('${preg.id}', '${opt}')">
-                            ${opt === 'Recepción' ? '<i class="bi bi-download me-2"></i>' : '<i class="bi bi-upload me-2"></i>'} ${opt}
+                        <button type="button" class="btn ${preg.type === 'toggle_mini' ? 'btn-lg flex-fill' : 'btn-toggle-traxion'} ${respuestas[preg.id] === opt ? 'btn-dark' : 'btn-outline-dark'}" onclick="saveToggle('${preg.id}', '${opt}')">
+                            ${opt}
                         </button>
                     `).join('')}
                 </div>`;
         } else if (preg.type === "textarea") {
-            inputHTML = `<textarea id="val-${preg.id}" class="form-control textarea-traxion w-100" rows="4" placeholder="${preg.placeholder}">${respuestas[preg.id] || ''}</textarea>`;
+            inputHTML = `<textarea id="val-${preg.id}" class="form-control textarea-traxion" rows="4" placeholder="${preg.placeholder}">${respuestas[preg.id] || ''}</textarea>`;
         }
 
         container.innerHTML = `
@@ -156,4 +289,11 @@ function formulario_transportista() {
 
     // Solución al Bug de Tiempo: Arrancamos el primer paso directamente en vez de esperar
     renderPaso();
+
+    window.updateRangeVal = function(el, unit) {
+    const display = el.previousElementSibling;
+    display.innerText = el.value + unit;
+    const id = el.id.replace('val-', '');
+    respuestas[id] = el.value; // Guardado en tiempo real
+    };
 }
