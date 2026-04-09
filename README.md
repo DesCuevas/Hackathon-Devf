@@ -40,27 +40,27 @@ cd Hackathon-Devf
 ```
 ### 3. Instalar Dependencias
 Instala todas las librerías necesarias del backend (Express, xlsx, dotenv, Gemini) ejecutando:
-```
-Bash
+
+```bash
 npm install
 ```
 ### 4. Configurar Variables de Entorno (API Key) 
 Por seguridad, la llave de la Inteligencia Artificial no está incluida en el código.
 
-Crea un archivo en la raíz del proyecto llamado exactamente .env
+- Crea un archivo en la raíz del proyecto llamado exactamente .env
 
-Abre el archivo y pega tu API Key de Google AI Studio con este formato:
+- Abre el archivo y pega tu API Key de Google AI Studio con este formato:
 
-Fragmento de código
-GEMINI_API_KEY=tu_api_key_secreta_aqui
+- Fragmento de código
+  GEMINI_API_KEY=tu_api_key_secreta_aqui
 
 Dicha API Key es una cadena alfanumérica.
 Más información de como crear la API KEY: https://ai.google.dev/gemini-api/docs/api-key?hl=es-419
 
 ### 5. Iniciar el Servidor
 Levanta el servidor local de Node.js con el siguiente comando:
-```
-Bash
+
+```bash
 node server.js
 ```
 Verás un mensaje en la terminal indicando: Servidor corriendo en el puerto 3000.
@@ -71,6 +71,7 @@ Abre tu navegador web favorito (Chrome, Edge, Firefox) y dirígete a:
 
 Allí, entrarás a la parte del index, para ver el funcionamiento completo del sistema es necesario crear una cuenta e iniciar sesión. Para ello, en el lado superior derecho está el botón de "Iniciar sesión", debajo, debes dar click en el botón de "Registrate aquí". Prueba a crear un perfil de administrador y uno de transportista. Dichos registros se crean en una base de datos de excel que se inicia localmente al crear el primer registro.
 
+```
 📁 HACHATHON DEVF/
 ├── 📁 back/                         # Lógica de scripts (JS)
 │   ├── 📄 formulario_admin.js       # Control de vista administrativa
@@ -103,13 +104,13 @@ Allí, entrarás a la parte del index, para ver el funcionamiento completo del s
 ├── 📄 README.md                     # Documentación del proyecto
 ├── 📄 registro.html                 # Pantalla de creación de usuario
 └── 📄 server.js                     # Servidor backend de la aplicación
-
+```
 ## ⚠️ Notas Importantes para Evaluación
 No usar Live Server: La aplicación está diseñada para ser servida directamente por Node.js. Usar extensiones como Live Server de VS Code causará que la página se recargue cada vez que la base de datos de Excel se actualice. Entra siempre por localhost:3000/index.html
 
 Si se agregan campos nuevos en los comentarios adicionales de los formularios del frontend, el backend creará automáticamente las columnas necesarias en el archivo de Excel gracias a la función json_to_sheet.
 
-## Para probar el sistema, siéntete libre de explorarlo con ambos perfiles, de administrador o transportista, llenar formularios, ver que se llenan los campos en la base de datos, y nuestra parte favorita: el Panel de Administrador. Allí, podrás ver los registros que acabas de crear en el formulario de "Registro de unidad" del administrador, su estatus de mantenimiento requerido, los detalles de los mantenimientos realizados con un pop-up emergente y la opción para actualizar y marcar un mantenimiento registrado en el panel sin fecha de realización como "Realizado". De igual manera, si se realiza el registro de un transporte en condiciones óptimas, y posteriormente un transportista ingresa el ID de ese transporte al llenar un formulario de recepción o entrega, y pone que las condiciones de operación son malas y un comentario detallando una falla no percatada, el panel de administrador actualiza el "Comentario IA" y el "Estatus" del mismo para prestar atención a los comentarios hechos por el transportista.
+# Para probar el sistema, siéntete libre de explorarlo con ambos perfiles, de administrador o transportista, llenar formularios, ver que se llenan los campos en la base de datos, y nuestra parte favorita: el Panel de Administrador. Allí, podrás ver los registros que acabas de crear en el formulario de "Registro de unidad" del administrador, su estatus de mantenimiento requerido, los detalles de los mantenimientos realizados con un pop-up emergente y la opción para actualizar y marcar un mantenimiento registrado en el panel sin fecha de realización como "Realizado". De igual manera, si se realiza el registro de un transporte en condiciones óptimas, y posteriormente un transportista ingresa el ID de ese transporte al llenar un formulario de recepción o entrega, y pone que las condiciones de operación son malas y un comentario detallando una falla no percatada, el panel de administrador actualiza el "Comentario IA" y el "Estatus" del mismo para prestar atención a los comentarios hechos por el transportista.
 
-## 💻 Desarrollado con pasión para el Hackathon Traxion 2026.
-# Saludos cordiales y anticipando los resultados, Desire, Marcos y Sandra.
+💻 Desarrollado con pasión para el Hackathon Traxion 2026.
+Saludos cordiales y anticipando los resultados, Desire, Marcos y Sandra.
