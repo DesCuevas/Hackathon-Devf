@@ -3,7 +3,6 @@
  * Lógica de Formulario Dinámico con Bifurcación (Recepción/Entrega)
  */
 function formulario_transportista() {
-    console.log("CHP1");
     
     const preguntas = [
         { 
@@ -151,10 +150,8 @@ function formulario_transportista() {
     /**
      * Renderiza la pregunta actual en el contenedor
      */
-    console.log("CHP2");
     
     function renderPaso() {
-            console.log("CHP3");
 
         const container = document.getElementById("dynamic-questions-container");
         if (!container) return; // Validación de seguridad
@@ -173,7 +170,6 @@ function formulario_transportista() {
         // Barra de progreso
         const porcentaje = (indiceVisual / totalPasosFiltrados) * 100;
         document.getElementById("form-progress-bar").style.width = `${porcentaje}%`;
-    console.log("CHP4");
 
         // Generar HTML
         let inputHTML = '';
@@ -215,7 +211,6 @@ function formulario_transportista() {
         `;
 
         document.getElementById("btn-prev").classList.toggle("d-none", pasoActual === 0);
-            console.log("CHP5");
 
         const esUltimo = (indiceVisual === totalPasosFiltrados);
         document.getElementById("btn-next").classList.toggle("d-none", esUltimo);
@@ -239,7 +234,6 @@ function formulario_transportista() {
         }
         return indice;
     }
-    console.log("CHP6");
 
     function obtenerPasoAnterior(indice) {
         let ant = indice - 1;

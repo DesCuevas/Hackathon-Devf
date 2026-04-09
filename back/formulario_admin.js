@@ -13,7 +13,7 @@ function formulario_admin() {
         
         // --- NUEVA PREGUNTA COMPLEJA: MANTENIMIENTOS ---
         { 
-            id: "historial_mantenimiento", 
+            id: "mantenimientos", 
             label: "Mantenimientos a la unidad", 
             type: "checklist_fechas", 
             options: [
@@ -116,14 +116,18 @@ function formulario_admin() {
     btnNext.replaceWith(newBtnNext);
     btnSubmit.replaceWith(newBtnSubmit);
 
-    newBtnNext.addEventListener("click", () => {
+  newBtnNext.addEventListener("click", () => {
         const preg = preguntas[pasoActual];
+        
         if (preg.type === "checklist_fechas") {
-            respuestas[preg.id] = procesarMantenimientos();
+            // MAGIA 1: Convertimos el arreglo a un String antes de guardarlo
+            const lista = procesarMantenimientos();
+            respuestas[preg.id] = JSON.stringify(lista);
         } else {
             const input = document.getElementById(`val-${preg.id}`);
             if (input) respuestas[preg.id] = input.value;
         }
+        
         pasoActual++;
         renderPaso();
     });
@@ -132,25 +136,55 @@ function formulario_admin() {
         pasoActual--;
         renderPaso();
     });
-
-    newBtnSubmit.addEventListener("click", () => {
+newBtnSubmit.addEventListener("click", async () => {
+        // 1. Guardamos el valor de la última pregunta (sea textarea o checklist)
         const preg = preguntas[pasoActual];
-        if (preg.type === "textarea") {
-            respuestas[preg.id] = document.getElementById(`val-${preg.id}`).value;
+        
+        if (preg.type === "checklist_fechas") {
+            // MAGIA 2: Si el checklist es la última pantalla, lo capturamos aquí también
+            const lista = procesarMantenimientos();
+            respuestas[preg.id] = JSON.stringify(lista);
+        } else {
+            // Funciona para textarea, text, number, etc.
+            const input = document.getElementById(`val-${preg.id}`);
+            if (input) respuestas[preg.id] = input.value;
+        }
+
+        // 2. Validación de seguridad
+        if (!respuestas["Id_unidad"]) {
+            alert("⚠️ Error: Falta el ID de la unidad. Es obligatorio para guardar en la base de datos.");
+            return;
         }
 
         console.log("JSON FINAL PARA BASE DE DATOS:", JSON.stringify(respuestas, null, 2));
-        alert("✅ Información de unidad y mantenimientos guardada correctamente.");
-        
-        // 3. REINICIO TOTAL (La clave está aquí)
-        pasoActual = 0;
-        
-        // Limpiamos el objeto de respuestas para que no cargue datos viejos en renderPaso
-        for (let key in respuestas) {
-            delete respuestas[key];
-        }
 
-        renderPaso();
+        try {
+            // 3. Enviamos los datos a Node.js usando fetch
+            const response = await fetch('http://localhost:3000/api/guardar-reporte', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(respuestas)
+            });
+
+            if (!response.ok) {
+                throw new Error("Fallo al comunicarse con el servidor Node.js");
+            }
+
+            alert("✅ Información de unidad y mantenimientos guardada correctamente en la Base de Datos.");
+            
+            // 4. REINICIO TOTAL
+            pasoActual = 0;
+            for (let key in respuestas) {
+                delete respuestas[key];
+            }
+            renderPaso();
+
+        } catch (error) {
+            console.error("Error al guardar en BD:", error);
+            alert("❌ Hubo un problema al guardar la información. Verifica que tu servidor esté encendido.");
+        }
     });
 
     renderPaso();
